@@ -13,24 +13,6 @@
 #
 #   cython_add_module( <module_name> <src1> <src2> ... <srcN> )
 #
-# To create a standalone executable, the function
-#
-#   cython_add_standalone_executable( <executable_name> [MAIN_MODULE src1] <src1> <src2> ... <srcN> )
-#
-# To avoid dependence on Python, set the PYTHON_LIBRARY cache variable to point
-# to a static library.  If a MAIN_MODULE source is specified,
-# the "if __name__ == '__main__':" from that module is used as the C main() method
-# for the executable.  If MAIN_MODULE, the source with the same basename as
-# <executable_name> is assumed to be the MAIN_MODULE.
-#
-# Where <module_name> is the name of the resulting Python module and
-# <src1> <src2> ... are source files to be compiled into the module, e.g. *.pyx,
-# *.py, *.c, *.cxx, etc.  A CMake target is created with name <module_name>.  This can
-# be used for target_link_libraries(), etc.
-#
-# The sample paths set with the CMake include_directories() command will be used
-# for include directories to search for *.pxd when running the Cython complire.
-#
 # Cache variables that effect the behavior include:
 #
 #  CYTHON_ANNOTATE
@@ -274,46 +256,9 @@ function( cython_add_module _name )
   compile_pyx( ${_name} generated_file ${pyx_module_sources} )
   include_directories( ${PYTHON_INCLUDE_DIRS} )
   python_add_module( ${_name} ${generated_file} ${other_module_sources} )
-  if( APPLE )
-    set_target_properties( ${_name} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup" )
-  else()
-    target_link_libraries( ${_name} ${PYTHON_LIBRARIES})
-  endif()
-endfunction()
-
-include( CMakeParseArguments )
-# cython_add_standalone_executable( _name [MAIN_MODULE src3.py] src1 src2 ... srcN )
-# Creates a standalone executable the given sources.
-function( cython_add_standalone_executable _name )
-  set( pyx_module_sources "" )
-  set( other_module_sources "" )
-  set( main_module "" )
-  cmake_parse_arguments( cython_arguments "" "MAIN_MODULE" "" ${ARGN} )
-  include_directories( ${PYTHON_INCLUDE_DIRS} )
-  foreach( _file ${cython_arguments_UNPARSED_ARGUMENTS} )
-    if( ${_file} MATCHES ".*\\.py[x]?$" )
-      get_filename_component( _file_we ${_file} NAME_WE )
-      if( "${_file_we}" STREQUAL "${_name}" )
-        set( main_module "${_file}" )
-      elseif( NOT "${_file}" STREQUAL "${cython_arguments_MAIN_MODULE}" )
-        set( PYTHON_MODULE_${_file_we}_static_BUILD_SHARED OFF )
-        compile_pyx( "${_file_we}_static" generated_file "${_file}" )
-        list( APPEND pyx_module_sources "${generated_file}" )
-      endif()
-    else()
-      list( APPEND other_module_sources ${_file} )
-    endif()
-  endforeach()
-
-  if( cython_arguments_MAIN_MODULE )
-    set( main_module ${cython_arguments_MAIN_MODULE} )
-  endif()
-  if( NOT main_module )
-    message( FATAL_ERROR "main module not found." )
-  endif()
-  get_filename_component( main_module_we "${main_module}" NAME_WE )
-  set( CYTHON_FLAGS ${CYTHON_FLAGS} --embed )
-  compile_pyx( "${main_module_we}_static" generated_file ${main_module} )
-  add_executable( ${_name} ${generated_file} ${pyx_module_sources} ${other_module_sources} )
-  target_link_libraries( ${_name} ${PYTHON_LIBRARIES} ${pyx_module_libs} )
+#   if( APPLE ) # TODO: is the libpython really needed ? It cause problems on platform lacking the shared lib. It's symbols are readily available in the interpreter process anyway.
+#     set_target_properties( ${_name} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup" )
+#   else()
+#     target_link_libraries( ${_name} ${PYTHON_LIBRARIES})
+#   endif()
 endfunction()

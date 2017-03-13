@@ -22,9 +22,9 @@ Please not that GATB-Core is distributed under Affero-GPL license.
 
 The following third parties should be already installed:
 
-* cmake 3.3+ (mandatory)
-* python 3.4+ (mandatory)
-* hdf5 (optional, gatb compiles its own otherwise)
+* CMake 3.1.0+ (mandatory)
+* Python 3.3+ (mandatory)
+* Python's setuptools >= 0.6b1
 * python-igraph (optional, for plotting BFS trees)
 
 #Project build
@@ -32,17 +32,15 @@ The following third parties should be already installed:
 For building your project, you should do the following
    
 ```bash 
-git clone https://github.com/Piezoid/pyGATB
+git clone --recursive https://github.com/Piezoid/pyGATB
 cd pyGATB
-git submodule init
-git submodule update
 mkdir build && cd build
 cmake . .. -DCMAKE_BUILD_TYPE=Release
 make -j8
 python setup.py install --user
 ```
 
-Then to run the notebook :
+Then, the demo notebook can be opened with:
 ```bash
 cd ../doc; 
 jupyter-notebook demo.ipynb
