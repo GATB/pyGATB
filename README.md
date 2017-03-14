@@ -37,7 +37,7 @@ cd pyGATB
 mkdir build && cd build
 cmake . .. -DCMAKE_BUILD_TYPE=Release
 make -j8
-python setup.py install --user
+python3 setup.py install --user
 ```
 
 Then, the demo notebook can be opened with:
