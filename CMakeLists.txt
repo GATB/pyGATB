@@ -1,14 +1,12 @@
 project(pyGATB)
 
-cmake_minimum_required( VERSION 3.0.2 )
+cmake_minimum_required( VERSION 3.1.0 )
 
 # TODO: set flags per target, checks compiler capabilities
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -flto")
 
 # Compiler cache support with ccache
 find_program(CCACHE_FOUND ccache)
@@ -44,6 +42,15 @@ set (gatb-tool-version ${gatb-tool_VERSION_MAJOR}.${gatb-tool_VERSION_MINOR}.${g
 ################################################################################
 SET (GATB_CORE_HOME  ${PROJECT_SOURCE_DIR}/thirdparty/gatb-core)
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake ${GATB_CORE_HOME}/gatb-core/cmake)
+
+include (CheckLTO)
+check_lto ()
+
+if(LTO_CFLAGS)
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${LTO_CFLAGS}")
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${LTO_CFLAGS}")
+    set(CMAKE_LD_FLAGS_RELEASE "${CMAKE_LD_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS_RELEASE} ${LTO_CFLAGS}")
+endif()
 
 ################################################################################
 # SUPPORTED KMER SIZES

@@ -1,0 +1,18 @@
+function (check_lto)
+    if (DEFINED HAVE_LTO)
+        return ()
+    endif ()
+
+    include(CheckCXXCompilerFlag)
+    CHECK_CXX_COMPILER_FLAG("-flto -fuse-linker-plugin" CHECK_LTO_COMPILE_RESULT)
+    if (${CHECK_LTO_COMPILE_RESULT})
+        set (HAVE_LTO true CACHE STRING "Status of LTO support")
+        set (LTO_CFLAGS "-flto -fuse-linker-plugin" CACHE STRING "LTO cflags")
+        message (STATUS "Check for C compiler LTO support - yes")
+        return ()
+    endif ()
+
+    set (HAVE_LTO false CACHE STRING "Status of LTO support")
+    set (LTO_CFLAGS "" CACHE STRING "LTO cflags")
+    message (STATUS "Check for C compiler LTO support - no")
+endfunction ()
