@@ -99,12 +99,12 @@ cdef class Graph:
 # Unwrap GraphIterators to get the inner ISmartIterator:
 ctypedef c_tools.ISmartIterator[c_graph.Node] cNodeIterator
 cdef inline cNodeIterator* unwrapN(c_graph.GraphIterator[c_graph.Node]&& it):
-    cdef cNodeIterator* uit = &it#.get()
+    cdef cNodeIterator* uit = it.get()
     uit.use()
     return uit
 
 cdef inline cNodeIterator* unwrapBN(c_graph.GraphIterator[c_graph.BranchingNode]&& it):
-    cdef cNodeIterator* uit = <cNodeIterator*> &it#.get()
+    cdef cNodeIterator* uit = <cNodeIterator*> it.get()
     uit.use()
     return uit
 
