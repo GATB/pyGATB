@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #***************************************************************************
 # GATB-Core management script: compile source code using a Docker container.
 #
@@ -16,14 +15,12 @@
 # Author: Patrick Durand, Inria
 # Created: February 2017
 #****************************************************************************
-
+set -eo pipefail
 #set -xv
 
-GCORE_SOURCE=/tmp/py-gatb-code
-GCORE_BUILD=/tmp/py-gatb-build
-
-[ ! -d ${GCORE_SOURCE} ] && { echo "${GCORE_SOURCE} does not exist. Abort."; exit 1; }
-[ ! -d ${GCORE_BUILD} ] && { echo "${GCORE_BUILD} does not exist. Abort."; exit 1; }
+PYGATB_SOURCE=/tmp/py-gatb-code
+PYGATB_BUILD=/tmp/py-gatb-build
+PYGATB_GITURL="https://github.com/Piezoid/pyGATB.git"
 
 if [ -z ${GIT_PROVIDER} ]; then
   GIT_PROVIDER="hub"
@@ -31,34 +28,35 @@ fi
 
 # git management not done for Jenkins/CI (Inria only)
 if [ ! ${GIT_PROVIDER} == "ci" ]; then
-  # Figure out whether or not we have to get GATB-Core source code
-  cd ${GCORE_SOURCE}
-  if [ ! -d "gatb-core" ]; then
-      git clone --recursive https://github.com/Piezoid/pyGATB.git
+
+#   set default branch to master if not specified otherwise using
+#   GIT_BRANCH environment variable
+  if [ -z ${GIT_BRANCH} ]; then
+   GIT_BRANCH=master
   fi
 
-  # Update GATB-Core then checkout appropriate branch
-  #cd gatb-core
-  #git pull --all
-
-  # set default branch to master if not specified otherwise using
-  # GIT_BRANCH environment variable
-  #if [ -z ${GIT_BRANCH} ]; then
-  #  GIT_BRANCH=master
-  #fi
-
-  #git checkout ${GIT_BRANCH}
+  # Figure out whether or not we have to get GATB-Core source code
+  if [ ! -d ${PYGATB_SOURCE} ]; then
+    git clone --single-branch --depth 1 -b ${GIT_BRANCH} ${PYGATB_GITURL} ${PYGATB_SOURCE}
+    cd ${PYGATB_SOURCE} && git submodule init && git submodule update --depth 1
+  else
+    cd ${PYGATB_SOURCE}
+    git checkout ${GIT_BRANCH}
+  fi
 fi
 
 # Prepare a fresh build directory
-cd ${GCORE_BUILD}
-if [ -d "build" ]; then
-    rm -rf build
+if [ -d ${PYGATB_BUILD} ]; then
+    rm -rf ${PYGATB_BUILD}
 fi
-mkdir build 
-cd build 
+mkdir -p ${PYGATB_BUILD}
+cd ${PYGATB_BUILD}
 
 # Compile source code
-cmake -D CMAKE_BUILD_TYPE=Release ${GCORE_SOURCE}/pyGATB
-make
-python3 setup.py install --user
+cmake -D CMAKE_BUILD_TYPE=Release ${PYGATB_SOURCE} $@
+make ${PARALLEL_OPT}
+
+# Test, distribute and install
+python3 setup.py test
+python3 setup.py bdist
+python3 setup.py install
