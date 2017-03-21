@@ -4,7 +4,7 @@ from os import path
 from src import graph
 
 class TestCaseWithDB(unittest.TestCase):
-    dbpath = '../thirdparty/gatb-core/gatb-core/test/db/'
+    dbpath = 'tests/db/'
     def get_db_path(self, name):
         fpath = path.join(self.dbpath, name)
         self.assertTrue(path.exists(fpath), msg='%r file not found in test data db' % name)
