@@ -2,12 +2,6 @@ project(pyGATB)
 
 cmake_minimum_required( VERSION 3.1.0 )
 
-# TODO: set flags per target, checks compiler capabilities
-set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-set(CMAKE_C_VISIBILITY_PRESET hidden)
-set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
 # Compiler cache support with ccache
 find_program(CCACHE_FOUND ccache)
 if(CCACHE_FOUND)
@@ -19,23 +13,45 @@ if(CCACHE_FOUND)
 endif(CCACHE_FOUND)
 
 ################################################################################
-# The version number.
+# Global compiler option
 ################################################################################
-SET (gatb-tool_VERSION_MAJOR 1)
-SET (gatb-tool_VERSION_MINOR 0)
-SET (gatb-tool_VERSION_PATCH 0)
+set(LINKER_FLAGS "${LINKER_FLAGS} -Wl,--as-needed -Wl,--allow-shlib-undefined")
+set(COMPILER_FLAGS "${COMPILER_FLAGS} -fvisibility-inlines-hidden")
 
-IF (DEFINED MAJOR)
-    SET (gatb-tool_VERSION_MAJOR ${MAJOR})
-ENDIF()
-IF (DEFINED MINOR)
-    SET (gatb-tool_VERSION_MINOR ${MINOR})
-ENDIF()
-IF (DEFINED PATCH)
-    SET (gatb-tool_VERSION_PATCH ${PATCH})
-ENDIF()
 
-set (gatb-tool-version ${gatb-tool_VERSION_MAJOR}.${gatb-tool_VERSION_MINOR}.${gatb-tool_VERSION_PATCH})
+set(ENABLE_LTO OFF CACHE BOOL "Enable Link Time Optimizations")
+if(${ENABLE_LTO} AND CMAKE_BUILD_TYPE STREQUAL "Release")
+message("LTO ENABLED!!!")
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        find_program (AR_FOUND NAMES gcc-ar)
+
+        set(COMPILER_FLAGS "${COMPILER_FLAGS} -flto")
+        set(LIKER_FLAGS "${LIKER_FLAGS} -fuse-linker-plugin")
+
+    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        find_program (AR_FOUND NAMES llvm-ar)
+
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 3.9)
+            set(COMPILER_FLAGS "${COMPILER_FLAGS} -flto=thin")
+        else()
+            set(COMPILER_FLAGS "${COMPILER_FLAGS} -flto")
+        endif()
+    endif()
+
+    set(CMAKE_C_ARCHIVE_CREATE "${AR_FOUND} qcs <TARGET> <OBJECTS>")
+    set(CMAKE_C_ARCHIVE_FINISH "")
+    set(CMAKE_CXX_ARCHIVE_CREATE "${AR_FOUND} qcs <TARGET> <OBJECTS>")
+    set(CMAKE_CXX_ARCHIVE_FINISH "")
+endif()
+
+
+# Apply configuration to CMake variables
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMPILER_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILER_FLAGS}")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${LIKER_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LIKER_FLAGS}")
+
 
 ################################################################################
 # Define cmake modules directory
@@ -43,21 +59,13 @@ set (gatb-tool-version ${gatb-tool_VERSION_MAJOR}.${gatb-tool_VERSION_MINOR}.${g
 SET (GATB_CORE_HOME  ${PROJECT_SOURCE_DIR}/thirdparty/gatb-core)
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake ${GATB_CORE_HOME}/gatb-core/cmake)
 
-include (CheckLTO)
-check_lto ()
-
-if(LTO_CFLAGS)
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${LTO_CFLAGS}")
-    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${LTO_CFLAGS}")
-    set(CMAKE_LD_FLAGS_RELEASE "${CMAKE_LD_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS_RELEASE} ${LTO_CFLAGS}")
-endif()
 
 ################################################################################
 # SUPPORTED KMER SIZES
 ################################################################################
 
-# One can uncomment this line and set the wanted values
-#set (KSIZE_LIST "32")
+# One can uncomment this line and set the wanted valuesFunction missing ending ")".  End of file
+set (KSIZE_LIST "32" CACHE STRING "Supported kmer sizes")
 
 ################################################################################
 # THIRD PARTIES
@@ -71,6 +79,10 @@ SET (GATB_CORE_INSTALL_EXCLUDE   1)
 
 # GATB CORE
 include (GatbCore)
+foreach(TARGET_NAME gatbcore-static hdf5)
+    target_compile_options(${TARGET_NAME} PRIVATE -fvisibility=hidden)
+endforeach()
+
 
 ################################################################################
 # PyGATB
@@ -98,34 +110,3 @@ enable_testing()
 add_test( python_tests "${PYTHON_EXECUTABLE}" setup.py test)
 # Process the CMakeLists.txt in the 'src' and 'bin' directory.
 add_subdirectory( src )
-#add_subdirectory( bin )
-
-################################################################################
-# Packaging
-################################################################################
-# We set the version number
-SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY  "gatb-tool ${PROJECT_NAME}")
-SET (CPACK_PACKAGE_VENDOR               "Genscale team (INRIA)")
-SET (CPACK_PACKAGE_VERSION_MAJOR        "${gatb-tool_VERSION_MAJOR}")
-SET (CPACK_PACKAGE_VERSION_MINOR        "${gatb-tool_VERSION_MINOR}")
-SET (CPACK_PACKAGE_VERSION_PATCH        "${gatb-tool_VERSION_PATCH}")
-SET (CPACK_PACKAGE_VERSION              "${gatb-tool-version}")  
-
-# We set the kind of archive
-SET (CPACK_GENERATOR                    "TGZ")
-SET (CPACK_SOURCE_GENERATOR             "TGZ")
-
-# Packaging the source ; we ignore unwanted files 
-SET (CPACK_SOURCE_IGNORE_FILES          
-    "^${PROJECT_SOURCE_DIR}/build/"  
-    "^${GATB_CORE_HOME}/.project"
-    "^${GATB_CORE_HOME}/.gitignore"
-    "^${GATB_CORE_HOME}/doc"
-    "^${GATB_CORE_HOME}/DELIVERY.md"
-)
-
-# Packaging the binary ; we want to include some additional files
-INSTALL (FILES   ${CMAKE_CURRENT_SOURCE_DIR}/LICENCE                     DESTINATION .)
-INSTALL (FILES   ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/THIRDPARTIES.md  DESTINATION .)
-
-include (CPack)

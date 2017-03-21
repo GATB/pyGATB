@@ -8,12 +8,10 @@ set_source_files_properties(
 
 # Multi-file cython modules do not appear to be working at the moment.
 cython_add_module(bank bank.pyx)
-set_target_properties(bank PROPERTIES CXX_VISIBILITY_PRESET default)
 set_property(TARGET bank PROPERTY CXX_STANDARD 11)
 target_link_libraries(bank gatbcore-static z)
 
 cython_add_module(graph graph.pyx)
-set_target_properties(graph PROPERTIES CXX_VISIBILITY_PRESET default)
 set_property(TARGET graph PROPERTY CXX_STANDARD 11)
 target_link_libraries(graph gatbcore-static z hdf5)
 
