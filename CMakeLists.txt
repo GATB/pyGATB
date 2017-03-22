@@ -12,7 +12,7 @@ if(CCACHE_FOUND)
     endif()
 endif(CCACHE_FOUND)
 
-SET(PYTHON_EXECUTABLE "python3")
+FIND_PROGRAM(PYTHON_EXECUTABLE NAMES python3.4 python3)
 
 ################################################################################
 # Global compiler option
