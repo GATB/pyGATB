@@ -12,6 +12,8 @@ if(CCACHE_FOUND)
     endif()
 endif(CCACHE_FOUND)
 
+SET(PYTHON_EXECUTABLE "python3")
+
 ################################################################################
 # Global compiler option
 ################################################################################
@@ -51,7 +53,6 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMPILER_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILER_FLAGS}")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${LIKER_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LIKER_FLAGS}")
-
 
 ################################################################################
 # Define cmake modules directory

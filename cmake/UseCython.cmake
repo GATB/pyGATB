@@ -256,9 +256,9 @@ function( cython_add_module _name )
   compile_pyx( ${_name} generated_file ${pyx_module_sources} )
   include_directories( ${PYTHON_INCLUDE_DIRS} )
   python_add_module( ${_name} ${generated_file} ${other_module_sources} )
-#   if( APPLE ) # TODO: is the libpython really needed ? It cause problems on platform lacking the shared lib. It's symbols are readily available in the interpreter process anyway.
-#     set_target_properties( ${_name} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup" )
+   if( APPLE ) # TODO: is the libpython really needed ? It cause problems on platform lacking the shared lib. It's symbols are readily available in the interpreter process anyway.
+     set_target_properties( ${_name} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup" )
 #   else()
 #     target_link_libraries( ${_name} ${PYTHON_LIBRARIES})
-#   endif()
+   endif()
 endfunction()
