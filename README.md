@@ -68,7 +68,7 @@ When installing Python3 on Linux, do not forget to install both Python3 (the int
 Example of installation on Debian/Jessie:
 
 ```bash 
-sudo apt-get install python3.4 python3.4-dev
+sudo apt-get install python3.4 python3.4-dev python3-setuptools
 ```
 
 ### Install Cython
