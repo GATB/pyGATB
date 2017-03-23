@@ -35,9 +35,47 @@ We suppose that your system (Linux or OSX) does not provide you with Python3 and
 
 **Note:** install procedures experimented on OSX system; should be quite similar on a Linux system.
 
+### Install Python3
+
+**Note:** depending on the way you install Python3, you will not build pyGATB the same way. Since we have tested both solutions, we provide you with our experience... ;-)
+
+#### Install Python3 - From package installer 
+
+Run Python installer from [its official package installer](https://www.python.org/ftp/python/3.4.4/python-3.4.4-macosx10.6.pkg).
+
+Using Python3 package installer places the interpreter files in a place that is not fully appropriate for CMake: you'll have to add some information on the CMake command-line (see section called "build pyGATB on OSX", below).
+
+#### Install Python3 - From sources
+
+```bash 
+curl -O https://www.python.org/ftp/python/3.4.5/Python-3.4.5.tgz
+tar -Zxf Python-3.4.5.tgz
+cd Python-3.4.5
+./configure
+make -j8 test
+sudo make install
+python3 --version
+cd ..
+sudo rm -rf Python-3.4.5*
+```
+
+Installing Python3 from its sources places the interpreter in a very appropriate way for CMake: you'll see below that the CMake command-line is very simple.
+
+#### Install Python3 - From sources: Linux
+
+When installing Python3 on Linux, do not forget to install both Python3 (the interpreter itself) and Python3-dev (the development package, required by Cython).
+
+Example of installation on Debian/Jessie:
+
+```bash 
+sudo apt-get install python3.4 python3.4-dev
+```
+
 ### Install Cython
 
-install Cython **from its source**:
+Requirement: Python3 has to be installed BEFORE installing Cython.
+
+Install Cython **from its source**, as follows:
 
 * download ```Cython-0.25.2.tar.gz``` from [https://pypi.python.org/pypi/Cython/](https://pypi.python.org/pypi/Cython/)
 * gunzip/untar the content of the Cython archive
@@ -64,32 +102,6 @@ if your OSX installation fails to run cython, then:
 cd /usr/local/bin/
 sudo ln -s /Library/Frameworks/Python.framework/Versions/3.4/bin/cython cython
 ```
-
-### Install Python3
-
-**Note:** depending on the way you install Python3, you will not build pyGATB the same way. Since we have tested both solutions, we provide you with our experience... ;-)
-
-#### Install Python3 - From package installer 
-
-Run Python installer from [its official package installer](https://www.python.org/ftp/python/3.4.4/python-3.4.4-macosx10.6.pkg).
-
-Using Python3 package installer places the interpreter files in a place that is not fully appropriate for CMake: you'll have to add some information on the CMake command-line (see section called "build pyGATB on OSX", below).
-
-#### Install Python3 - From sources
-
-```bash 
-curl -O https://www.python.org/ftp/python/3.4.5/Python-3.4.5.tgz
-tar -Zxf Python-3.4.5.tgz
-cd Python-3.4.5
-./configure
-make -j8 test
-sudo make install
-python3 --version
-cd ..
-sudo rm -rf Python-3.4.5*
-```
-
-Installing Python3 from its sources places the interpreter in a very appropriate way for CMake: you'll see below that the CMake command-line is very simple.
 
 # Build pyGATB on Linux
 
