@@ -4,21 +4,20 @@ This is an experimental python wrapper for the GATB-CORE library.
 
 The architecture of the tool is as follows:
 
-* a CMakeLists.txt file used for building the project
-* a 'tools' directory holding a default source code using GATB-Core
-* a 'scripts' directory holding a script to automatically package the tool
-* a 'thirdparty' directory holding the gatb-core resources
-* a 'doc' directory, contains a Jupyter notebook demo
-* a 'tests' directory holding test procedures
-    
-The 'thirdparty' directory is only available for tool created outside the GATB-Tools repository.
-Tools located within GATB-Tools rely on a common GATB-Core sub-module already available in this repository.
 
 # License
 
 Please not that GATB-Core is distributed under Affero-GPL license.
 
-# Dependencies
+# Install pyGATB
+
+pyGATB is a binary python extension module. In the future, binary distribution will be distributed for Linux and macOS.
+
+In the meantime you can try [prebuilt docker images with Jupyter notebook](docker/).
+
+# How to build pyGATB
+
+## Dependencies
 
 The following third parties should be already installed:
 
@@ -29,7 +28,7 @@ The following third parties should be already installed:
 * Python's setuptools >= 0.6b1
 * python-igraph (optional, for plotting BFS trees)
 
-# Install Python3 and Cython
+
 
 We suppose that your system (Linux or OSX) does not provide you with Python3 and Cython. So let us do that installation first.
 
@@ -39,7 +38,7 @@ We suppose that your system (Linux or OSX) does not provide you with Python3 and
 
 **Note:** depending on the way you install Python3, you will not build pyGATB the same way. Since we have tested both solutions, we provide you with our experience... ;-)
 
-#### Install Python3 - From package installer 
+#### Install Python3 - From package installer
 
 Run Python installer from [its official package installer](https://www.python.org/ftp/python/3.4.4/python-3.4.4-macosx10.6.pkg).
 
@@ -61,7 +60,7 @@ sudo rm -rf Python-3.4.5*
 
 Installing Python3 from its sources places the interpreter in a very appropriate way for CMake: you'll see below that the CMake command-line is very simple.
 
-#### Install Python3 - From sources: Linux
+#### Install Python3: Ubuntu and debian
 
 When installing Python3 on Linux, do not forget to install both Python3 (the interpreter itself) and Python3-dev (the development package, required by Cython).
 
@@ -103,7 +102,7 @@ cd /usr/local/bin/
 sudo ln -s /Library/Frameworks/Python.framework/Versions/3.4/bin/cython cython
 ```
 
-# Build pyGATB on Linux
+## Build pyGATB on Linux
 
 For building your project, you should do the following
    
@@ -136,7 +135,7 @@ cd ../doc;
 jupyter-notebook demo.ipynb
 ```
 
-# Build pyGATB on OSX
+## Build pyGATB on OSX
 
 ### If you have installed Python3 using an installer:
 

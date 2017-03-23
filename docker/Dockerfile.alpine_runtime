@@ -11,5 +11,5 @@ RUN easy_install-3.5 "/tmp/$PYGATB_EGG" \
 
 # Set work dir with samples
 WORKDIR /home/work
-COPY samples samples
+COPY samples .
 VOLUME /home/work

@@ -1,4 +1,7 @@
 /build
 tags
 **/.ipynb_checkpoints/
+**/*.tar*
+**/*.egg
+**/*.whl
 

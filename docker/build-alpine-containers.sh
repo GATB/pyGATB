@@ -1,6 +1,9 @@
 #!/bin/sh
 set -eo pipefail
 
+# Where to ouput the .tar.xz containing the distributed docker images
+[ -z "$IMAGES_ARCHIVE_DIR" ] && IMAGES_ARCHIVE_DIR=$(pwd)
+
 cd $(dirname $0)
 
 # Where to find the pyGATB repo (directory on the host containing the repo dir)
@@ -44,3 +47,7 @@ rm -rf samples
 
 # Jupyter notebook container +
 docker build -f Dockerfile.alpine_notebook -t pygatb/alpine_notebook .
+
+OUT_ARCHIVE="$IMAGES_ARCHIVE_DIR/docker_images.tar.xz"
+rm -f "$OUT_ARCHIVE"
+docker save pygatb/alpine_notebook pygatb/alpine_runtime | xz > $OUT_ARCHIVE
