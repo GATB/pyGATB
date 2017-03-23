@@ -21,7 +21,8 @@ class TestGraph(TestCaseWithDB):
 
     def setUp(self):
         self.h5path = self.get_db_path(self.h5relpath)
-        self.g = graph.Graph(self.h5path)
+        print('-in %s' % self.h5path)
+        self.g = graph.Graph('-in %s' % self.h5path)
 
     def test_kmerSize(self):
         self.assertEqual(self.g.kmerSize, self.expected_kmerSize)

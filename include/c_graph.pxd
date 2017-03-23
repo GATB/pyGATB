@@ -152,6 +152,8 @@ cdef extern from "gatb/debruijn/impl/Graph.hpp" namespace "gatb::core::debruijn:
 
         @staticmethod
         Graph load(string uri)
+        @staticmethod
+        Graph create(const char* uri)
         size_t getKmerSize()
 
         GraphIterator[Node] iterator()

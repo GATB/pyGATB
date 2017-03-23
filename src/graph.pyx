@@ -35,7 +35,7 @@ cdef class Graph:
     cdef c_graph.Graph graph
 
     def __cinit__(self, str uri):
-        self.graph = c_graph.Graph.load(uri.encode('ascii'))
+        self.graph = c_graph.Graph.create(uri.encode('ascii'))
 
     def __iter__(self):
         "Iterates over branching nodes."
