@@ -1,3 +1,9 @@
+[![License](http://img.shields.io/:license-Affero--GPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0.en.html)&nbsp;&nbsp;[![](https://img.shields.io/badge/platform-c++/11_Python--3-yellow.svg)](https://isocpp.org/wiki/faq/cpp11)&nbsp;&nbsp;[![](https://img.shields.io/badge/run_on-Linux--Mac_OSX-yellowgreen.svg)]()
+
+| MacOSX  |  Linux |
+|---------|--------|
+|  [![Build Status](https://ci.inria.fr/gatb-core/view/pyGATB/job/pyGATB-build-macos-10.9.5-gcc-4.2.1/badge/icon)](https://ci.inria.fr/gatb-core/view/pyGATB/job/pyGATB-build-macos-10.9.5-gcc-4.2.1/) | [![Build Status](https://ci.inria.fr/gatb-core/view/pyGATB/job/pyGATB-build-ubuntu16-gcc-5.4/badge/icon)](https://ci.inria.fr/gatb-core/view/pyGATB/job/pyGATB-build-ubuntu16-gcc-5.4/) |
+
 # About pyGATB
 
 pyGATB is a Python3 wrapper for the [GATB-Core library](https://github.com/GATB).
