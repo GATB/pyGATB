@@ -23,14 +23,14 @@
 #   purpose, docker run expects some information, as illustrated in this
 #   command:
 #
-#   docker run                                      \
-#     -i -t                                         \
-#     -e "GIT_BRANCH=master"                        \ <-- branch to build
-#     -v /path/to/py-gatb-source:/tmp/py-gatb-code  \ <-- source code
-#     -v /path/to/py-gatb-build:/tmp/py-gatb-build  \ <-- compiled code (optional)
-#     py_gatb_machine                               \ <-- container to start
-#     py-gatb-compile.sh                            \ <-- script to run
-#       -DCMAKE_CXX_FLAGS_RELEASE="-march=native -Ofast -DNDEBUG"
+#   docker run
+#     -i -t
+#     -e "GIT_BRANCH=master"                                       <--
+#     -v /path/to/py-gatb-source:/tmp/py-gatb-code                 <-- source code
+#     -v /path/to/py-gatb-build:/tmp/py-gatb-build                 <-- compiled code (optional)
+#     py_gatb_machine                                              <-- container to start
+#     /tmp/py-gatb-code/pyGATB/docker/py-gatb-compile.sh           <-- script to run
+#       -DCMAKE_CXX_FLAGS_RELEASE="-march=native -Ofast -DNDEBUG"  <-- cmake arguments
 #
 #   First of all, we have retain that the code is not compiled within the
 #   container. Instead we use two external volumes bound to the container using
@@ -82,22 +82,12 @@
 #              -e "GIT_BRANCH=master"
 #              -v /path/to/py-gatb-source:/tmp/py-gatb-code \
 #              -v /path/to/py-gatb-build:/tmp/py-gatb-build \
-#              py_gatb_machine \
-#              py-gatb-compile.sh
+#              py_gatb_machine
 #
-#   Sample command from the real life: docker run --name py_gatb_machine -i -t -e "GIT_BRANCH=master" -v /Users/pdurand/tmp/py-gatb/docker:/tmp/py-gatb-code -v /Users/pdurand/tmp/py-gatb/docker:/tmp/py-gatb-build py_gatb_machine py-gatb-compile.sh
-#    docker run --name py_gatb_machine -i -t -e "GIT_BRANCH=master" -v /Volumes/DATA_1/inria/tmp/docker:/tmp/py-gatb-code -v /Volumes/DATA_1/inria/tmp/docker:/tmp/py-gatb-build py_gatb_machine py-gatb-compile.sh
-# ### Test compile code.
 #
-#   In the above docker run command, you can replace 
-#
-#     py-gatb-compile.sh
-#
-#   by 
-#
-#     gatb-test.sh 
-#
-#   to run unit tests of the freshly compiled pyGATB library.
+#   Sample command from the real life: docker run --name py_gatb_machine -i -t -e "GIT_BRANCH=master" -v /Users/pdurand/tmp/py-gatb/docker:/tmp/py-gatb-code -v /Users/pdurand/tmp/py-gatb/docker:/tmp/py-gatb-build py_gatb_machine
+#    docker run --name py_gatb_machine -i -t -e "GIT_BRANCH=master" -v /Volumes/DATA_1/inria/tmp/docker:/tmp/py-gatb-code -v /Volumes/DATA_1/inria/tmp/docker:/tmp/py-gatb-build py_gatb_machine
+
 #
 # ### Additional notes
 # 
@@ -173,10 +163,11 @@ RUN cd /opt \
 #
 RUN apt-get install -y python3 python3-dev python3-pip \
     && apt-get clean \
-    && pip3 install Cython --install-option="--no-cython-compile"
+    && pip3 install pytest-runner pytest Cython --install-option="--no-cython-compile"
 
 # ###
 #     Build scripts
 #
-COPY py-gatb-compile.sh /usr/local/bin/
+CMD ["/tmp/py-gatb-code/pyGATB/docker/py-gatb-compile.sh"]
+#COPY py-gatb-compile.sh /usr/local/bin/
 #RUN py-gatb-compile.sh
