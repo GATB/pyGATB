@@ -108,7 +108,7 @@ For building your project, you should do the following
    
 ```bash 
 # Get a frech copy of pyGATB
-git clone --recursive https://github.com/Piezoid/pyGATB
+git clone --recursive https://github.com/GATB/pyGATB
 
 # Prepare build directory
 cd pyGATB && mkdir build && cd build
@@ -141,7 +141,7 @@ jupyter-notebook demo.ipynb
 
 ```bash 
 # Get a frech copy of pyGATB
-git clone --recursive https://github.com/Piezoid/pyGATB
+git clone --recursive https://github.com/GATB/pyGATB
 
 # Prepare build directory
 cd pyGATB && mkdir build && cd build
@@ -173,7 +173,7 @@ python3 setup.py install --user
 
 ```bash 
 # Get a frech copy of pyGATB
-git clone --recursive https://github.com/Piezoid/pyGATB
+git clone --recursive https://github.com/GATB/pyGATB
 
 # Prepare build directory
 cd pyGATB && mkdir build && cd build

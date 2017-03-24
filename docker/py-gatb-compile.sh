@@ -24,7 +24,7 @@ set -eo pipefail
 [ -z "$PYGATB_BUILD" ] && PYGATB_BUILD="/tmp/py-gatb-build"
 # Build dir name
 [ -z "$PYGATB_BUILD_DIRNAME" ] && PYGATB_BUILD_DIRNAME="build"
-[ -z "$PYGATB_GITURL" ] && PYGATB_GITURL="https://github.com/Piezoid/pyGATB.git"
+[ -z "$PYGATB_GITURL" ] && PYGATB_GITURL="https://github.com/GATB/pyGATB.git"
 [ -z "$PARALLEL_OPT" ] && PARALLEL_OPT="-j4"
 
 
