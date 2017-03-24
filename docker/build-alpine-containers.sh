@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -eo pipefail
 
 # Where to ouput the .tar.xz containing the distributed docker images
@@ -29,7 +29,8 @@ docker run --rm --name "pygatb-alpine-compilation" \
     -e "GIT_PROVIDER=$GIT_PROVIDER" \
     -e "PYGATB_BUILD_DIRNAME=$PYGATB_BUILD_DIRNAME" \
     -e "PARALLEL_OPT=$PARALLEL_OPT" \
-    pygatb/alpine_compiler py-gatb-compile.sh -DENABLE_LTO=ON
+    pygatb/alpine_compiler ash /tmp/py-gatb-code/pyGATB/docker/py-gatb-compile.sh \
+      -DENABLE_LTO=ON
 
 # Extract the egg for subsequent docker builds
 PYGATB_EGG=($PYGATB_BUILD/$PYGATB_BUILD_DIRNAME/dist/pyGATB*.egg)

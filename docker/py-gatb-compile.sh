@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #***************************************************************************
 # GATB-Core management script: compile source code using a Docker container.
 #
