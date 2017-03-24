@@ -86,8 +86,6 @@
 #
 #
 #   Sample command from the real life: docker run --name py_gatb_machine -i -t -e "GIT_BRANCH=master" -v /Users/pdurand/tmp/py-gatb/docker:/tmp/py-gatb-code -v /Users/pdurand/tmp/py-gatb/docker:/tmp/py-gatb-build py_gatb_machine
-#    docker run --name py_gatb_machine -i -t -e "GIT_BRANCH=master" -v /Volumes/DATA_1/inria/tmp/docker:/tmp/py-gatb-code -v /Volumes/DATA_1/inria/tmp/docker:/tmp/py-gatb-build py_gatb_machine
-
 #
 # ### Additional notes
 # 
