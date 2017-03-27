@@ -23,7 +23,7 @@ from pyGATB.graph import Graph
 # We will use a file containing a De Bruijn Graph stored
 # in HDF5 format; file created using dbgh5 tool provided
 # with GATB-Core. (This file is located next to this snippet)
-F_NAME='celegans_reads.h5'
+F_NAME='../thirdparty/gatb-core/gatb-core/test/db/celegans_reads.h5'
 
 # We create the graph
 graph = Graph('-in %s' % F_NAME)
