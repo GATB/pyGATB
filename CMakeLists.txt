@@ -23,7 +23,6 @@ set(COMPILER_FLAGS "${COMPILER_FLAGS} -fvisibility-inlines-hidden")
 
 set(ENABLE_LTO OFF CACHE BOOL "Enable Link Time Optimizations")
 if(${ENABLE_LTO} AND CMAKE_BUILD_TYPE STREQUAL "Release")
-message("LTO ENABLED!!!")
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         find_program (AR_FOUND NAMES gcc-ar)
 
@@ -64,9 +63,12 @@ SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake ${GA
 ################################################################################
 # SUPPORTED KMER SIZES
 ################################################################################
-
-# One can uncomment this line and set the wanted valuesFunction missing ending ")".  End of file
-set (KSIZE_LIST "32" CACHE STRING "Supported kmer sizes")
+# Use GATB-Core defaults: 32   64   96  128
+#   (as defined in gatb-core/gatb-core/src/CMakeLists.txt)
+# You can uncomment the following SET line and set the wanted values. 
+# You can also pass values to cmake from cmd-line using: 
+#   -DKSIZE_LIST="32 64 96 128"
+#set (KSIZE_LIST "32" CACHE STRING "Supported kmer sizes")
 
 ################################################################################
 # THIRD PARTIES
