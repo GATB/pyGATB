@@ -26,8 +26,6 @@ from libcpp cimport *
 
 from enum import Enum
 
-#from libcpp cimport *
-
 cdef class Bank:
     cdef c_bank.IBank* thisptr
     cdef str uri
@@ -53,15 +51,15 @@ cdef class Bank:
     property compositionNb:
         def __get__(self):
             return c_bank.Bank.getCompositionNb(self.uri.encode('ascii'))
-
+    
+    property uri:
+        def __get__(self):
+            return self.uri;
+        
     def __repr__(self):
         return '<%s %s %r>' % (Bank.__qualname__, self.type.title(), self.uri)
 
 
-
-#cdef class FastaB ank(Bank):
-    #def __init__(self, str filename, bool fasta_q):
-        #pass
 
 cdef class SequenceIterator:
     cdef c_tools.Iterator[c_bank.Sequence]* thisptr
@@ -75,16 +73,12 @@ cdef class SequenceIterator:
         else:
             self.thisptr.next()
             return Sequence.fromCpp(self.thisptr.item())
-
-class Encoding(Enum):
-    "Sequence encoding enum"
-    ASCII = 0
-    INTEGER = 1
-    BINARY = 2
+            
+    def __iter__(self):
+      return self
 
 cdef class Sequence:
-    cdef cData *data
-    cdef public bytes comment, quality
+    cdef public bytes comment, quality, sequence
     cdef public size_t index
     cdef bool owned
 
@@ -96,37 +90,19 @@ cdef class Sequence:
         raise TypeError('Sequence cannot be instantiated from Python')
 
     @staticmethod
-    cdef fromCpp(c_bank.Sequence &cseq, bool own=False):
+    cdef fromCpp(c_bank.Sequence &cseq):
         cdef Sequence seq = Sequence.__new__(Sequence)
-        seq.data = &cseq.getData()
+        if cseq.getDataEncoding() != 0: #cData.Encoding_e.ASCII:
+            raise NotImplemented('Only ascii sequences are supported')
+        seq.sequence = cseq.getDataBuffer()[:cseq.getDataSize()]
         seq.index = cseq.getIndex()
         seq.comment = cseq.getComment()
         seq.quality = cseq.getQuality()
-        if own:
-            seq.owned = True
-            seq.data.use()
         return seq
 
-    def __dealloc__(self):
-        if self.owned:
-            self.data.forget()
-
     def __len__(self):
-        return self.data.size()
-
-    property encoding:
-        def __get__(self):
-            return Encoding(self.data.getEncoding())
-        #def __set__(self, enc):
-            #cdef cData.Encoding_e c_enc
-            #if isinstance(enc, int):
-                #c_enc = enc
-            #else:
-                #c_enc = enc.value
-            #self.thisptr.setEncoding(c_enc)
+        return len(self.sequence)
 
     def __bytes__(self):
-        #return b''
-        return self.data.getBuffer()[:self.data.size()]
-        #return self.thisptr.toString()
+        return self.sequence
 
