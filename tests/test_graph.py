@@ -17,7 +17,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # ===========================================================================
 from . import TestCaseWithDB
-from .. import graph as core
+from .. import core
 
 class TestGraph(TestCaseWithDB):
     h5relpath = 'celegans_reads.h5'

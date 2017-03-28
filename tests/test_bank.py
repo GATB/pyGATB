@@ -17,7 +17,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # ===========================================================================
 from . import TestCaseWithDB
-from .. import bank as core
+from .. import core
 
 class TestBank(TestCaseWithDB):
     album_name = 'album.txt'
