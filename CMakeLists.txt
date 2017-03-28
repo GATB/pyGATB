@@ -2,6 +2,18 @@ project(pyGATB)
 
 cmake_minimum_required( VERSION 3.1.0 )
 
+################################################################################
+# USER CMAKE FLAGS
+################################################################################
+
+# Link Time Optimizations : produce smaller module, possibly a bit faster too
+set(ENABLE_LTO OFF CACHE BOOL "Enable Link Time Optimizations")
+
+# Optimized kmer size list :
+# Use GATB-Core defaults: 32   64   96  128
+#   (as defined in gatb-core/gatb-core/src/CMakeLists.txt)
+set (KSIZE_LIST "32 64 96 128" CACHE STRING "Supported kmer sizes")
+
 # Compiler cache support with ccache
 find_program(CCACHE_FOUND ccache)
 if(CCACHE_FOUND)
@@ -12,6 +24,7 @@ if(CCACHE_FOUND)
     endif()
 endif(CCACHE_FOUND)
 
+# Avoid compilation with python2, prefer cp3.4 when available
 FIND_PROGRAM(PYTHON_EXECUTABLE NAMES python3.4 python3)
 
 ################################################################################
@@ -20,29 +33,33 @@ FIND_PROGRAM(PYTHON_EXECUTABLE NAMES python3.4 python3)
 set(LINKER_FLAGS "${LINKER_FLAGS} -Wl,--as-needed -Wl,--allow-shlib-undefined")
 set(COMPILER_FLAGS "${COMPILER_FLAGS} -fvisibility-inlines-hidden")
 
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    # Strip symbols
+    set(LINKER_FLAGS "${LINKER_FLAGS} -Wl,-s")
 
-set(ENABLE_LTO OFF CACHE BOOL "Enable Link Time Optimizations")
-if(${ENABLE_LTO} AND CMAKE_BUILD_TYPE STREQUAL "Release")
-    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        find_program (AR_FOUND NAMES gcc-ar)
+    # Link Time Optimizations
+    if(${ENABLE_LTO})
+        if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+            find_program(AR_FOUND NAMES gcc-ar)
 
-        set(COMPILER_FLAGS "${COMPILER_FLAGS} -flto")
-        set(LIKER_FLAGS "${LIKER_FLAGS} -fuse-linker-plugin")
-
-    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        find_program (AR_FOUND NAMES llvm-ar)
-
-        if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 3.9)
-            set(COMPILER_FLAGS "${COMPILER_FLAGS} -flto=thin")
-        else()
             set(COMPILER_FLAGS "${COMPILER_FLAGS} -flto")
-        endif()
-    endif()
+            set(LINKER_FLAGS "${LINKER_FLAGS} -fuse-linker-plugin")
 
-    set(CMAKE_C_ARCHIVE_CREATE "${AR_FOUND} qcs <TARGET> <OBJECTS>")
-    set(CMAKE_C_ARCHIVE_FINISH "")
-    set(CMAKE_CXX_ARCHIVE_CREATE "${AR_FOUND} qcs <TARGET> <OBJECTS>")
-    set(CMAKE_CXX_ARCHIVE_FINISH "")
+        elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+            find_program(AR_FOUND NAMES llvm-ar)
+
+            if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 3.9)
+                set(COMPILER_FLAGS "${COMPILER_FLAGS} -flto=thin")
+            else()
+                set(COMPILER_FLAGS "${COMPILER_FLAGS} -flto")
+            endif()
+        endif()
+
+        set(CMAKE_C_ARCHIVE_CREATE "${AR_FOUND} qcs <TARGET> <OBJECTS>")
+        set(CMAKE_C_ARCHIVE_FINISH "")
+        set(CMAKE_CXX_ARCHIVE_CREATE "${AR_FOUND} qcs <TARGET> <OBJECTS>")
+        set(CMAKE_CXX_ARCHIVE_FINISH "")
+    endif()
 endif()
 
 
@@ -50,25 +67,12 @@ endif()
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMPILER_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILER_FLAGS}")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${LIKER_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LIKER_FLAGS}")
 
 ################################################################################
 # Define cmake modules directory
 ################################################################################
 SET (GATB_CORE_HOME  ${PROJECT_SOURCE_DIR}/thirdparty/gatb-core)
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake ${GATB_CORE_HOME}/gatb-core/cmake)
-
-
-################################################################################
-# SUPPORTED KMER SIZES
-################################################################################
-# Use GATB-Core defaults: 32   64   96  128
-#   (as defined in gatb-core/gatb-core/src/CMakeLists.txt)
-# You can uncomment the following SET line and set the wanted values. 
-# You can also pass values to cmake from cmd-line using: 
-#   -DKSIZE_LIST="32 64 96 128"
-#set (KSIZE_LIST "32" CACHE STRING "Supported kmer sizes")
 
 ################################################################################
 # THIRD PARTIES

@@ -23,7 +23,6 @@ class BinaryDistribution(Distribution):
 
 setup(
     # Package description
-    #eager_resources=['pyGATB/graph.so', 'src/graph.so', 'graph.so'],
     name = "pyGATB",
     version = '0.1',
     description = 'An experimental python wrapper for gatb-core',
@@ -33,9 +32,9 @@ setup(
     author_email = 'gatb-tools-support@lists.gforge.inria.fr',
     url = 'https://gatb.inria.fr/',
     # Package content
-    packages=['pyGATB', 'pyGATB.tests'],
-    package_dir = {'pyGATB': 'src'},
-    package_data = {'pyGATB': ['*.so'], 'pyGATB.tests': ['db/*']},
+    packages=['gatb', 'gatb.tests'],
+    package_dir = {'gatb': 'src'},
+    package_data = {'gatb': ['*.so'], 'gatb.tests': ['db/*']},
     #eager_resources=['*.so'],
     distclass=BinaryDistribution,
     zip_safe = False,
