@@ -18,7 +18,7 @@
 # ===========================================================================
 
 # we import pyGATB Bank
-from pyGATB.bank import Bank
+from gatb import Bank
 
 # We will use a file containing some Fasta sequences
 F_NAME='../thirdparty/gatb-core/gatb-core/test/db/query.fa'

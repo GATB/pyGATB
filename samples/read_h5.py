@@ -18,7 +18,7 @@
 # ===========================================================================
 
 # we import pyGATB Graph
-from pyGATB.graph import Graph
+from gatb import Graph
 
 # We will use a file containing a De Bruijn Graph stored
 # in HDF5 format; file created using dbgh5 tool provided
