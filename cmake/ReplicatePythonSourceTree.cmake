@@ -3,8 +3,11 @@
 
 
 
-file( COPY README setup.py MANIFEST.in src tests bin DESTINATION "${CMAKE_ARGV3}"
+file( COPY README setup.py src bin DESTINATION "${CMAKE_ARGV3}"
   FILES_MATCHING PATTERN "*.py" )
 
-file( COPY thirdparty/gatb-core/gatb-core/test/db DESTINATION "${CMAKE_ARGV3}/tests" )
+file( COPY tests DESTINATION "${CMAKE_ARGV3}/src"
+  FILES_MATCHING PATTERN "*.py" )
+
+file( COPY thirdparty/gatb-core/gatb-core/test/db DESTINATION "${CMAKE_ARGV3}/src/tests" )
 file( COPY setup.cfg DESTINATION "${CMAKE_ARGV3}")

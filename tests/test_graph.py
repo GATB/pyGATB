@@ -16,20 +16,8 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # ===========================================================================
-import unittest
-from os import path
-
-from src import graph
-
-class TestCaseWithDB(unittest.TestCase):
-    dbpath = 'tests/db/'
-    def get_db_path(self, name):
-        fpath = path.join(self.dbpath, name)
-        self.assertTrue(path.exists(fpath), msg='%r file not found in test data db' % name)
-        return fpath
-
-    def test_000_have_db(self):
-        self.assertTrue(path.isdir(self.dbpath), msg='test data db not found: %r' % path.abspath(self.dbpath))
+from . import TestCaseWithDB
+from .. import graph as core
 
 class TestGraph(TestCaseWithDB):
     h5relpath = 'celegans_reads.h5'
@@ -40,18 +28,18 @@ class TestGraph(TestCaseWithDB):
     def setUp(self):
         self.h5path = self.get_db_path(self.h5relpath)
         print('-in %s' % self.h5path)
-        self.g = graph.Graph('-in %s' % self.h5path)
+        self.g = core.Graph('-in %s' % self.h5path)
 
     def test_kmerSize(self):
         self.assertEqual(self.g.kmerSize, self.expected_kmerSize)
 
     def aux_test_iterator(self, it, expected_len):
-        self.assertIsInstance(it, graph.NodeIterator)
+        self.assertIsInstance(it, core.NodeIterator)
         l = list(it)
         self.assertEqual(len(l), expected_len)
 
         node = l[0]
-        self.assertIsInstance(node, graph.Node)
+        self.assertIsInstance(node, core.Node)
         self.assertEqual(len(node), self.expected_kmerSize)
 
     def test_listbranching(self):

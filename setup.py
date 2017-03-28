@@ -34,8 +34,8 @@ setup(
     url = 'https://gatb.inria.fr/',
     # Package content
     packages=['pyGATB', 'pyGATB.tests'],
-    package_dir = {'pyGATB': 'src', 'pyGATB.tests': 'tests'},
-    package_data = {'': ['*.so']},
+    package_dir = {'pyGATB': 'src'},
+    package_data = {'pyGATB': ['*.so'], 'pyGATB.tests': ['db/*']},
     #eager_resources=['*.so'],
     distclass=BinaryDistribution,
     zip_safe = False,
