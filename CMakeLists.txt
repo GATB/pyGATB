@@ -30,12 +30,17 @@ FIND_PROGRAM(PYTHON_EXECUTABLE NAMES python3.4 python3)
 ################################################################################
 # Global compiler option
 ################################################################################
-set(LINKER_FLAGS "${LINKER_FLAGS} -Wl,--as-needed -Wl,--allow-shlib-undefined")
 set(COMPILER_FLAGS "${COMPILER_FLAGS} -fvisibility-inlines-hidden")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     # Strip symbols
     set(LINKER_FLAGS "${LINKER_FLAGS} -Wl,-s")
+
+    if(APPLE)
+        set(LINKER_FLAGS "${LINKER_FLAGS} -Wl,-undefined,dynamic_lookup")
+    else()
+        set(LINKER_FLAGS "${LINKER_FLAGS} -Wl,--as-needed -Wl,--allow-shlib-undefined")
+    endif()
 
     # Link Time Optimizations
     if(${ENABLE_LTO})
