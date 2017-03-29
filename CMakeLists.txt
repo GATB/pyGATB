@@ -110,9 +110,13 @@ include( UseCython )
 # no-longer needed in the build tree.  However, with pure *.py source, the
 # source is processed directly.  To handle this, we reproduce the availability
 # of the source files in the build tree.
-add_custom_target( ReplicatePythonSourceTree ALL ${CMAKE_COMMAND} -P
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ReplicatePythonSourceTree.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}
+add_custom_target( ReplicatePythonSourceTree ALL
+    cp -r src setup.py setup.cfg LICENSE README.rst
+          ${CMAKE_CURRENT_BINARY_DIR}/
+    COMMAND cp -r tests
+            ${CMAKE_CURRENT_BINARY_DIR}/src/
+    COMMAND cp -r thirdparty/gatb-core/gatb-core/test/db
+            ${CMAKE_CURRENT_BINARY_DIR}/src/tests/
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
 include_directories(${pyGATB_SOURCE_DIR}/include)
