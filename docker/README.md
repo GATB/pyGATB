@@ -46,7 +46,13 @@ docker run -v path_to_work_dir:/home/work --rm pygatb/alpine_runtime python3 my_
 
 The `build-alpine-containers.sh` script allows to rebuild the containers from pyGATB source.
 
+### Building manylinux1 wheels
+
+The `build-manylinux.sh` script compile pyGATB in an old Linux distribution (CentOS 5)
+against multiple Python3 version. This generates wheels compatible with
+many linux distributions and that can be uploaded to PyPI.
+
 ## Debian build environment
 
-The binary python package is compiled inside a Debian container built with `Dockerfile.debian_compiler`.
+The `build-debian.sh` build an EGG inside a Debian Jessie container for Python 3.4.
 
