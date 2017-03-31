@@ -19,12 +19,14 @@
 # Created: March 2017
 #****************************************************************************
 set -e
-cd $(dirname $0)/context
+
+SCRIPT_DIR=$( cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P )
+cd ${SCRIPT_DIR}/context
 
 docker build -t "pygatb/debian_compiler" -f Dockerfiles/Dockerfile.debian_compiler .
 
 # Run compilation (kill switch: "docker container stop manylinux1-compilation")
 docker run --rm --name "debian-compilation" \
-    -v "$(realpath "../../.."):/mnt/" \
+    -v "${SCRIPT_DIR}/../..:/mnt/" \
     -e "PYGATB_BUILD=/mnt/pyGATB-build-debian" \
     pygatb/debian_compiler
