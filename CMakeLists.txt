@@ -3,6 +3,15 @@ project(pyGATB)
 cmake_minimum_required( VERSION 3.1.0 )
 
 ################################################################################
+# Version number of pyGATB
+################################################################################
+# FOR NOW: the default version number is defined in src/VERSION
+# Future use will be:
+# SET (pyGATB_VERSION_MAJOR 0)
+# SET (pyGATB_VERSION_MINOR 1)
+# SET (pyGATB_VERSION_PATCH 0)
+
+################################################################################
 # USER CMAKE FLAGS
 ################################################################################
 
