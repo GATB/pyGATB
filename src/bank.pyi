@@ -38,6 +38,9 @@ cdef class Bank:
             self.thisptr.forget()
 
     def __iter__(self):
+        """
+        Provide an iterator over the sequences contained in this bank.
+        """
         cdef SequenceIterator it = SequenceIterator()
         cdef c_tools.Iterator[c_bank.Sequence]* cit = self.thisptr.iterator()
         it.thisptr = cit
@@ -45,17 +48,46 @@ cdef class Bank:
         return it
 
     property type:
+        """
+        Provide the bank type: album, fasta or fastq.
+        """
         def __get__(self):
             return c_bank.Bank.getType(self.uri.encode('ascii')).decode('ascii')
 
-    property compositionNb:
+    property albums:
+        """
+        Provide the number of banks contained in an album. This method always returns
+        1 for single-based Fasta. 
+        or Fastq bank file
+        """
         def __get__(self):
-            return c_bank.Bank.getCompositionNb(self.uri.encode('ascii'))
+            return self.thisptr.getCompositionNb()
     
     property uri:
+        """
+        Provide the URI from which this bank has been loaded.
+        """
         def __get__(self):
             return self.uri;
-        
+    
+    property estimateNbSequences:
+        """
+        Provide an estimation of the number of sequences contained in a bank.
+        Estimation is made by computing a basic ratio from the first 5000 sequences
+        contained in the bank. This value is of interest only for huge sequence file.
+        """
+        def __get__(self):
+            return self.thisptr.estimateNbItems()
+    
+    property estimateNbLetters:
+        """
+        Provide an estimation of the number of sequence letters contained in a bank.
+        Estimation is made by computing a basic ratio from the first 5000 sequences
+        contained in the bank. This value is of interest only for huge sequence file.
+        """
+        def __get__(self):
+            return self.thisptr.estimateSequencesSize()
+
     def __repr__(self):
         return '<%s %s %r>' % (Bank.__qualname__, self.type.title(), self.uri)
 
