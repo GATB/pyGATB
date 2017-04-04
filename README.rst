@@ -16,8 +16,18 @@ The current release of pyGATB gives access to the following GATB-Core
 components:
 
 -  Bank: the class that enables to load Fasta and Fastaq files
+-  Sequence: the class that holds a sequence (ID, letters, quality)
 -  Graph: the class that holds the De Bruijn graph
 -  Node: the class that makes graph's nodes
+
+Using that API you can start prototyping algorithms:
+
+- read a sequence file (Bank): FastA, FastQ (plain text or gzipped)
+- or read a set of files (still using the same Bank!)
+- convert that Bank to a De Bruijn graph (Graph)
+- navigate through the Graph (Node)
+
+all of that directly using the Python Programming Language.
 
 Documentation
 =============
