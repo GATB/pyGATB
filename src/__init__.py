@@ -10,4 +10,7 @@ import os
 # Import public facing API for re-export
 from .core import Bank, Graph
 
-__version__ = open(os.path.join(os.path.dirname(__file__), 'VERSION')).read().strip()
+# Get version from VERSION file
+with open(os.path.join(os.path.dirname(__file__), 'VERSION')) as f:
+    __version__ = f.read().strip()
+del f, os

@@ -28,8 +28,9 @@ class TestBank(TestCaseWithDB):
 
         # Load each read set and count the total number of read
         read_count = 0
-        for readset in open(self.get_db_path(self.album_name)):
-            read_count += self.aux_load_readset(readset.rstrip())
+        with open(self.get_db_path(self.album_name)) as album_readsets:
+            for readset in album_readsets:
+                read_count += self.aux_load_readset(readset.rstrip())
 
         self.assertEqual(album_reads_count, read_count)
 
