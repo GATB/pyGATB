@@ -24,8 +24,6 @@ from c_tools cimport Data as cData
 from libcpp cimport *
 
 
-from enum import Enum
-
 cdef class Bank:
     cdef c_bank.IBank* thisptr
     cdef str uri
