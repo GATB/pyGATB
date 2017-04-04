@@ -22,23 +22,13 @@ from .. import core
 class TestBank(TestCaseWithDB):
     album_name = 'album.txt'
 
-    def test_album(self):
-        # Load the album
-        album_reads_count = self.aux_load_readset(self.album_name)
-
-        # Load each read set and count the total number of read
-        read_count = 0
-        with open(self.get_db_path(self.album_name)) as album_readsets:
-            for readset in album_readsets:
-                read_count += self.aux_load_readset(readset.rstrip())
-
-        self.assertEqual(album_reads_count, read_count)
-
-    def aux_load_readset(self, readset):
+    def aux_load_readset(self, readset, expected_type):
+        "Loads a bank, tests some invariants, and return the number of sequence"
         readset_fpath = self.get_db_path(readset)
         bank = core.Bank(readset_fpath)
 
         self.assertIsInstance(bank, core.Bank)
+        self.assertEqual(bank.type, expected_type)
 
         it = iter(bank)
         self.assertIsInstance(it, core.SequenceIterator)
@@ -48,11 +38,48 @@ class TestBank(TestCaseWithDB):
 
         return len(sequences)
 
+    def test_album(self):
+        # Load the album
+        album_reads_count = self.aux_load_readset(self.album_name, 'album')
+
+        # Load each read set and count the total number of read
+        read_count = 0
+        with open(self.get_db_path(self.album_name)) as album_readsets:
+            for readset in album_readsets:
+                read_count += self.aux_load_readset(readset.rstrip(), 'fasta')
+
+        self.assertEqual(album_reads_count, read_count)
+
     def test_fasta_gzip(self):
-        self.assertEqual(self.aux_load_readset('reads3.fa.gz'), 5000)
+        self.assertEqual(self.aux_load_readset('reads3.fa.gz', 'fasta'), 5000)
 
     def test_fastaq_gzip(self):
         bank = core.Bank(self.get_db_path('sample.fastq.gz'))
         for sequence in bank:
             self.assertIsInstance(sequence, core.Sequence)
             self.assertEqual(len(sequence.sequence), len(sequence.quality))
+
+    def test_estimateNbSequences(self):
+        from tempfile import NamedTemporaryFile
+
+        nrepeats = 256 # Number of times we repeat sample1.fa in the album
+        sample1_path  = self.get_db_path('sample1.fa')
+
+        album_tmpfile = NamedTemporaryFile('w+t', encoding='ascii', suffix='.txt')
+        album_tmpfile.writelines([sample1_path + '\n'] * nrepeats)
+        album_tmpfile.flush()
+
+        bank = core.Bank(sample1_path)
+        album_bank = core.Bank(album_tmpfile.name)
+
+        self.assertEqual(
+            bank.estimateNbSequences * nrepeats,
+            album_bank.estimateNbSequences
+        )
+
+        self.assertEqual(
+            bank.estimateNbLetters * nrepeats,
+            album_bank.estimateNbLetters
+        )
+
+        album_tmpfile.close()
