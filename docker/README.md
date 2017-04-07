@@ -7,7 +7,7 @@ There are three types of docker images that can be built from here:
 
 ## Standalone runtime containers
 
-If your are only interested in trying pyGATB, standalone images can be [found here (24MB)](https://www.dropbox.com/s/q6dst3dwm70d9c1/docker_images.tar.xz?dl=1).
+If your are only interested in trying pyGATB, standalone images can be [found here (24MB)](https://github.com/GATB/pyGATB/releases/download/v0.1a0/docker_images.tar.xz).
 
 ### Installation procedure:
 
