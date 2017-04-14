@@ -25,7 +25,8 @@ from gatb import Graph
 # with GATB-Core. (This file is located next to this snippet)
 F_NAME='../thirdparty/gatb-core/gatb-core/test/db/celegans_reads.h5'
 
-# We create the graph
+# We create the graph from our .h5 file
+# Note: Graph directly accepts Fasta or Fastq files
 graph = Graph('-in %s' % F_NAME)
 
 # We iterate over some nodes
