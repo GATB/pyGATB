@@ -146,12 +146,14 @@ cdef class NodeIterator:
         return self
 
     def __next__(self):
+        cdef Node node
         if self.thisptr.isDone():
             raise StopIteration()
         else:
-            self.thisptr.next()
             # Copy the Node in a python wrapper :
-            return Node.create(self.thisptr.item(), self.graph)
+            node = Node.create(self.thisptr.item(), self.graph)
+            self.thisptr.next()
+            return node
 
 from cpython cimport object
 
