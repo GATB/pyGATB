@@ -1,7 +1,8 @@
 /build*/
+.ipynb_checkpoints/
+__pycache__/
+*.tar*
+*.egg
+*.whl
+.vscode
 tags
-**/.ipynb_checkpoints/
-**/*.tar*
-**/*.egg
-**/*.whl
-
