@@ -144,26 +144,27 @@ cdef class Sequence:
     def __repr__(Sequence self):
         return '<Sequence %d %r len=%d>' % (self.index, str(self), len(self))
 
-    cdef __iseq(Sequence self, Sequence other):
-        if self is other:
-            return True
-        elif type(other) is Sequence:
-            return other.sequence == self.sequence \
-               and other.comment == self.comment \
-               and other.quality == self.quality
+    cdef bool __iseq(Sequence self, Sequence other):
+        return self is other \
+            or other.sequence == self.sequence \
+           and other.quality== self.quality \
+           and other.comment == self.comment
 
-    cdef __isless(Sequence self, Sequence other):
+    cdef bool __isless(Sequence self, Sequence other):
         if self is other:
-            return True
-        elif type(other) is Sequence:
-            return (other.sequence, other.comment, other.quality) \
-                 > (self.sequence, self.comment, self.quality)
+            return False
+        elif self.sequence != other.sequence:
+            return self.sequence < other.sequence
+        elif self.quality != other.quality:
+            return self.quality < other.quality
+        else:
+            return self.comment < other.comment
 
     def __richcmp__(Sequence self, Sequence other, int op):
         if op & 2: # == or !=
             return self.__iseq(other) != ((op & 1) != 0) # Xor flip for !=
         else: # >, >=, < or <=
-            return ( other.__isless(self) if (op & 5) # Swap order for > or <=
+            return ( other.__isless(self) if op == 4 or op == 1 # Swap order for > or <=
                      else self.__isless(other) ) \
                    != ((op & 1) != 0) # Xor flip for <= or >=
 
