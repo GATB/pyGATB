@@ -16,6 +16,7 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # ===========================================================================
+cimport cython
 cimport c_bank
 cimport c_tools
 
@@ -109,6 +110,7 @@ cdef class SequenceIterator:
     def __iter__(self):
       return self
 
+@cython.freelist(256)
 cdef class Sequence:
     cdef public bytes comment, quality, sequence
     cdef public size_t index
