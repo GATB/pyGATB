@@ -98,11 +98,13 @@ cdef class SequenceIterator:
             self.thisptr.forget()
 
     def __next__(self):
+        cdef Sequence seq
         if self.thisptr.isDone():
             raise StopIteration()
         else:
+            seq = Sequence.fromCpp(self.thisptr.item())
             self.thisptr.next()
-            return Sequence.fromCpp(self.thisptr.item())
+            return seq
             
     def __iter__(self):
       return self
