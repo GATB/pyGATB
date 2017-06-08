@@ -114,7 +114,7 @@ cdef class Sequence:
     cdef public size_t index
     cdef bool owned
 
-    def __cinit__(self):
+    def __cinit__(Sequence self):
         #FIXME: what about zero initialization ?
         assert self.owned == False
 
@@ -132,9 +132,41 @@ cdef class Sequence:
         seq.quality = cseq.getQuality()
         return seq
 
-    def __len__(self):
+    def __len__(Sequence self):
         return len(self.sequence)
 
-    def __bytes__(self):
+    def __bytes__(Sequence self):
         return self.sequence
+
+    def __str__(Sequence self):
+        return self.sequence.decode('ascii')
+
+    def __repr__(Sequence self):
+        return '<Sequence %d %r len=%d>' % (self.index, str(self), len(self))
+
+    cdef __iseq(Sequence self, Sequence other):
+        if self is other:
+            return True
+        elif type(other) is Sequence:
+            return other.sequence == self.sequence \
+               and other.comment == self.comment \
+               and other.quality == self.quality
+
+    cdef __isless(Sequence self, Sequence other):
+        if self is other:
+            return True
+        elif type(other) is Sequence:
+            return (other.sequence, other.comment, other.quality) \
+                 > (self.sequence, self.comment, self.quality)
+
+    def __richcmp__(Sequence self, Sequence other, int op):
+        if op & 2: # == or !=
+            return self.__iseq(other) != ((op & 1) != 0) # Xor flip for !=
+        else: # >, >=, < or <=
+            return ( other.__isless(self) if (op & 5) # Swap order for > or <=
+                     else self.__isless(other) ) \
+                   != ((op & 1) != 0) # Xor flip for <= or >=
+
+    def __hash__(Sequence self):
+        return hash((self.comment, self.sequence, self.quality))
 
