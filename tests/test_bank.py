@@ -83,3 +83,14 @@ class TestBank(TestCaseWithDB):
         )
 
         album_tmpfile.close()
+
+    def test_eq(self):
+        bank = core.Bank(self.get_db_path('sample.fastq.gz'))
+        it = iter(bank)
+        s1 = next(it)
+        s2 = next(it)
+
+        self.assertEqual(s1, s1)
+        self.assertEqual(s2, s2)
+        self.assertNotEqual(s1, s2)
+        self.assertEqual(len(set([s1,s2]*2)), 2)
