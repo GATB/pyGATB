@@ -142,7 +142,7 @@ cdef class Sequence:
         return self.sequence.decode('ascii')
 
     def __repr__(Sequence self):
-        return '<Sequence %d %r len=%d>' % (self.index, str(self), len(self))
+        return '<Sequence %d %r len=%d>' % (self.index, self.comment.decode('ascii'), len(self))
 
     cdef bool __iseq(Sequence self, Sequence other):
         return self is other \
