@@ -36,7 +36,7 @@ class TestBank(TestCaseWithDB):
         sequences = list(it)
         self.assertIsInstance(sequences[0], core.Sequence)
 
-        return len(sequences)
+        return len(set(sequences))
 
     def test_album(self):
         # Load the album
