@@ -23,12 +23,15 @@ cimport c_tools
 from c_bank cimport Bank as cBank
 from c_tools cimport Data as cData
 from libcpp cimport *
+from posix.unistd cimport access, F_OK
 
 
 cdef class Bank:
     cdef c_bank.IBank* thisptr
     cdef str uri
     def __cinit__(self, str uri):
+        if access(uri.encode('ascii'), F_OK) != 0:
+            raise FileNotFoundError
         self.uri = uri
         self.thisptr = cBank.open(uri.encode('ascii'))
 
